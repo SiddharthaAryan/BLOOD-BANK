@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isStaff() {
+      return request.auth != null && exists(/databases/$(database)/documents/demo_staff/$(request.auth.uid));
+    }
+    match /demo_staff/{uid} { allow read, write: if false; }
+    match /demo_records/{id} {
+      allow read: if isStaff();
+      allow create: if isStaff()
+        && request.resource.data.keys().hasOnly(['fields','status','source','reviewerUid','createdAt'])
+        && request.resource.data.status == 'reviewed'
+        && request.resource.data.source == 'paper_review'
+        && request.resource.data.reviewerUid == request.auth.uid
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.fields is map
+        && request.resource.data.fields.keys().hasOnly(['name','age','phone','city','donation','notes'])
+        && request.resource.data.fields.keys().hasAll(['name','age','phone','city','donation','notes'])
+        && request.resource.data.fields.name is string && request.resource.data.fields.name.size() <= 500
+        && request.resource.data.fields.age is string && request.resource.data.fields.age.size() <= 500
+        && request.resource.data.fields.phone is string && request.resource.data.fields.phone.size() <= 500
+        && request.resource.data.fields.city is string && request.resource.data.fields.city.size() <= 500
+        && request.resource.data.fields.donation is string && request.resource.data.fields.donation.size() <= 500
+        && request.resource.data.fields.notes is string && request.resource.data.fields.notes.size() <= 500;
+      allow update, delete: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
