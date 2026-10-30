@@ -1,0 +1,7 @@
+# Local blood-donor desk — demonstration only
+
+A loopback-only, single-computer demo. Two images are read by locally installed Tesseract, and verified sample fields are saved in SQLite. CSV and XLSX exports are available. Images and OCR text are not saved in the database; OCR input uses a temporary directory. A crash can leave temporary files. The OCR scores are averages over recognised words, not correctness probabilities. Only a few labelled fields are heuristically suggested; checkboxes and clinical answers are not inferred. This is not the complete form.
+
+Requirements: Python 3, Tesseract OCR with English language data on PATH, and openpyxl for XLSX. Install prerequisites from approved sources. In this folder run `python server.py`, then open http://127.0.0.1:8765. Exit with Ctrl+C. No Firebase or internet is required after installing prerequisites. Use fictional data only. DB file `demo-records.sqlite3` is local and unencrypted; deleting it deletes the demo data. The server binds to loopback, not a phone-accessible network. For handover keep database separate from source and never commit records.
+
+No authentication, encryption, audit, backup, clinical validation, consent, or security audit is implemented. Not fit for real donor data. A local-network/QR donor flow is not implemented. The original complete form and Excel mapping are needed. Independent evaluation is needed to select OCR based on representative handwriting and checkboxes; Tesseract is a baseline, not a claim of best accuracy. Test with synthetic samples only.
