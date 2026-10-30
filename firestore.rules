@@ -1,0 +1,8 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Initial setup is deliberately closed. No client access until the
+    // application and role-specific rules have been implemented and tested.
+    match /{document=**} { allow read, write: if false; }
+  }
+}
